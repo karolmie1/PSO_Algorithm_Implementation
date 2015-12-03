@@ -13,6 +13,9 @@
 
 #### TO BE DEFINED BY THE USER
 
+initModel<-function(history) {
+   return(newModel)
+}
 #selection of a LIST of points from the history
 #to be defined
 selection<-function(history, model)
@@ -62,7 +65,7 @@ aggregatedOperator<-function(history, oldModel)
 metaheuristicRun<-function(initialization, startPoints, termination, evaluation)
 {
    history<-initialization(startPoints)
-   history<-evaluateList(history)
+   history<-evaluateList(history,evaluation)
    model<-initModel(history)
    while (!termination(history,model))
    {
