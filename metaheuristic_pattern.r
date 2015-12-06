@@ -14,7 +14,7 @@
 #### TO BE DEFINED BY THE USER
 
 initModel<-function(history) {
-   return(newModel)
+   return(history[1])
 }
 #selection of a LIST of points from the history
 #to be defined
@@ -22,25 +22,47 @@ selection<-function(history, model)
 {
    #select a number of points from the history using the 
    #method's parameters and the current state of the model
-   return(selectedPoints)
+   return(model);
 }
 
 #update of a model based on a LIST of points
 #to be defined
-modelUpdate<-function(selectedPoints, oldModel)
+modelUpdate<-function(selectedPoints, oldModel, evaluation)
 {
    #take a look at the list of selectedPoints and 
    #on the current state of the model, update it 
    #and then return
-   return (newModel)
+   #print("before")
+   #print(oldModel)
+   #print("selected")
+   #print(selectedPoints)
+   for (i in 1:length(selectedPoints))
+   {
+     quality = evaluation(oldModel[[1]]$coordinates)
+     qualityDwa = evaluation(selectedPoints[[i]]$coordinates)
+ #    print(qualityDwa)
+     if(evaluation(selectedPoints[[i]]$coordinates) > quality)
+     {
+         oldModel = list(list(coordinates = selectedPoints[[i]]$coordinates))
+#	 print("after")
+#	 print(oldModel)
+     }
+   }
+
+#print("end")
+#print(oldModel)
+   return (oldModel) 
 }
 
 #generation of a LIST of new points
 #to be defined
 variation<-function(selectedPoints, model)
 {
+x = list(coordinates = model[[1]]$coordinates+1)
+y = list(coordinates = model[[1]]$coordinates-1)
+
+   return(list(y, x));
    #generate the list of newPoints and then  
-   return (newPoints)
 }
 
 #####  THE METAHEURISTIC "ENGINE"
@@ -48,12 +70,14 @@ variation<-function(selectedPoints, model)
 #An aggregated operator takes the list of historical points anf the model
 #and generates the list of new points
 #A "side effect" is the model update
-aggregatedOperator<-function(history, oldModel)
+aggregatedOperator<-function(history, oldModel,evaluation)
 {
 
    selectedPoints<-selection(history, oldModel)
-   newModel<-modelUpdate(selectedPoints, oldModel)
-   newPoints<-variation(selectedPoints, newModel)
+   newPoints<-variation(selectedPoints,oldModel )
+   #print("newPoints")
+   #print(newPoints)
+   newModel<-modelUpdate(newPoints, oldModel,evaluation)
    return (list(newPoints=newPoints,newModel=newModel))
 }
 
@@ -67,9 +91,10 @@ metaheuristicRun<-function(initialization, startPoints, termination, evaluation)
    history<-initialization(startPoints)
    history<-evaluateList(history,evaluation)
    model<-initModel(history)
+
    while (!termination(history,model))
    {
-      aa<-aggregatedOperator(history, model)
+      aa<-aggregatedOperator(history, model,evaluation)
       aa$newPoints<-evaluateList(aa$newPoints, evaluation)
       history<-historyPush(history,aa$newPoints)
       model<-aa$newModel
