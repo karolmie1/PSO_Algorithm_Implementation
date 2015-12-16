@@ -12,35 +12,56 @@
 
 
 #### TO BE DEFINED BY THE USER
-
-initModel<-function(history) {
-   return(newModel)
+getBestPoint <- function(points) {
+  bestPoint = points[[1]];
+  for(point in points) {
+    if( point$quality > bestPoint$quality) {
+      bestPoint = point;
+    }
+  }
+  return(bestPoint);
 }
+
+#Model structure:
+#list of:
+# - best point globally known
+#     - coordinates
+#     - quality
+# - list of points
+#     - vector of best known coordinates for point
+#     - vector of current coordinates
+#     - vector of velocity
+#     - quality
+initModel<-function(history) {
+#TODO: finish to comply with model
+  newModel = list(point=history, best=getBestPoint(history));
+   return(newModel);
+}
+
 #selection of a LIST of points from the history
 #to be defined
 selection<-function(history, model)
 {
-   #select a number of points from the history using the 
-   #method's parameters and the current state of the model
-   return(selectedPoints)
+   #TODO: implement and test - extract list of current coordinates from model
+   return(model);
 }
 
 #update of a model based on a LIST of points
 #to be defined
 modelUpdate<-function(selectedPoints, oldModel)
 {
-   #take a look at the list of selectedPoints and 
-   #on the current state of the model, update it 
-   #and then return
-   return (newModel)
+   #TODO: implement and test - substitute current coordinates
+   #                         - count new velocities
+   #                         - update global best
+   return (oldModel) 
 }
 
 #generation of a LIST of new points
 #to be defined
 variation<-function(selectedPoints, model)
 {
-   #generate the list of newPoints and then  
-   return (newPoints)
+  #TODO: implement and test - count new point coordinates: use function described in documentation
+  #                         - add to properties files learning attributes
 }
 
 #####  THE METAHEURISTIC "ENGINE"
@@ -50,7 +71,6 @@ variation<-function(selectedPoints, model)
 #A "side effect" is the model update
 aggregatedOperator<-function(history, oldModel)
 {
-
    selectedPoints<-selection(history, oldModel)
    newModel<-modelUpdate(selectedPoints, oldModel)
    newPoints<-variation(selectedPoints, newModel)
