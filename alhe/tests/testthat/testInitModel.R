@@ -1,5 +1,16 @@
 test_that("Model initializes properly", {
-  #TODO: init model test
+  popCount = 5;
+  dimCount = 3;
+  x = generateStartPoints(popCount, dimCount, 5, 5);
+  model = initModel(evaluateList(x, sum));
+
+  expect_that(length(model$population$velocity), equals(popCount));
+  expect_that(length(model$population$position), equals(popCount));
+  expect_that(length(model$population$best), equals(popCount));
+
+  expect_that(length(model$population$velocity[[2]]), equals(dimCount));
+  expect_that(length(model$population$position[[2]]$coordinates), equals(dimCount));
+  expect_that(length(model$population$best[[2]]$coordinates), equals(dimCount));
 })
 
 test_that("Evaluation method works", {
@@ -16,4 +27,23 @@ test_that("Best point gets best point", {
   result = getBestPoint(evaluateList(x, sum));
 
   expect_that(result$quality, equals(12));
+})
+
+test_that("Normalizing don't increase numbers", {
+  #check negative numbers
+  expect_that(normalizeBySquaring(-10,0) < 0, is_true());
+  expect_that(normalizeBySquaring(-10,0) > -10, is_true());
+
+  #check positive numbers
+  expect_that(normalizeBySquaring(10,0) > 0, is_true());
+  expect_that(normalizeBySquaring(10,0) < 10, is_true());
+
+  #check corner case: zero
+  expect_that(normalizeBySquaring(0,0) == 0, is_true());
+})
+
+test_that("Init Velocity generates arrays with desired dimentions", {
+  result = generateInitVelocity(3, 4);
+  expect_that(length(result), equals(3));
+  expect_that(length(result[[1]]), equals(4));
 })

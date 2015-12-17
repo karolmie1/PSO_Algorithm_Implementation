@@ -22,6 +22,20 @@ getBestPoint <- function(points) {
   return(bestPoint);
 }
 
+#TODO: this is biased by distance from zero, it should be biased by the middle point between extremes: implementation and tests
+normalizeBySquaring <- function(velocity, center) {
+  return(sign(velocity)*sqrt(abs(velocity)));
+}
+
+#Initial Velocity should be random, and should be adequate to search space size
+#This function provides such constrained initial velocities.
+generateInitVelocity <- function(popCount, dimCount) {
+  center = (app.maxCoord + app.minCoord)/2;
+  max = normalizeBySquaring(app.maxCoord, center);
+  min = normalizeBySquaring(app.minCoord, center);
+  return(replicate(popCount, list(runif(dimCount, min, max))));
+}
+
 #Model structure:
 #list of:
 # - best point globally known
@@ -33,9 +47,11 @@ getBestPoint <- function(points) {
 #     - vector of velocity
 #     - quality
 initModel<-function(history) {
-#TODO: finish to comply with model
-  newModel = list(point=history, best=getBestPoint(history));
-   return(newModel);
+  popCount = length(history);
+  dimCount = length(history[[1]]$coordinates);
+  population = list(velocity = generateInitVelocity(popCount, dimCount), position = history, best = history);
+  newModel = list(population = population, best = getBestPoint(history));
+  return(newModel);
 }
 
 #selection of a LIST of points from the history
