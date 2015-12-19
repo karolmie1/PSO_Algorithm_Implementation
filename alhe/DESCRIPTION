@@ -1,11 +1,14 @@
 Package: alhe
 Type: Package
-Title: What the Package Does (Title Case)
+Title: An implementation of Particle Swarm Optimization algorithm
 Version: 0.1
 Date: 2015-12-19
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Authors@R: c(
+    person("Karol", "Mierzejewski", email = "karolmie1@interia.pl", role = "cre"),
+    person("Michal", "Klecha", email = "michalklecha.0@gmail.com", role = "aut"))
+Description: An implementation of Particle Swarm Optimization algorithm
+URL: https://github.com/karolmie1/PSO_Algorithm_Implementation
+License: X11
 LazyData: TRUE
 Suggests:
     testthat
