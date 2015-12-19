@@ -1,17 +1,29 @@
-How to run it:
+[![Build Status](https://travis-ci.org/karolmie1/PSO_Algorithm_Implementation.svg)](https://travis-ci.org/karolmie1/PSO_Algorithm_Implementation)
 
-Before you do anything load properties:
-  source('workspace/PSO_Algorithm_Implementation/properties.R')
+Description:
+-------
 
-If you want to run the algorithm first load it:
-  source('workspace/PSO_Algorithm_Implementation/metaheuristic_pattern.r')
-and then execute:
-  metaheuristicRun(initialization, startPoints, termination, evaluation)
+#TODO
 
-if you don't want to initialize this stuff yourself you can use predefined functions located in: 
-source('workspace/PSO_Algorithm_Implementation/utils.R')
+Requirements:
+- devtools
+- testthat
 
+How to build it:
+-------
 
-To run tests: 
-source('workspace/PSO_Algorithm_Implementation/testSuite.R')
+```
+devtools::install()
+```
 
+How to test it:
+-------
+
+```
+devtools::test()
+```
+
+How to use it:
+-------
+
+#TODO

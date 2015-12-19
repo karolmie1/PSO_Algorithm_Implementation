@@ -1,8 +1,8 @@
 #A general pattern of a metaheuristic method
 #(C)Jaroslaw Arabas, ALHE, 2012
-#To define the METHOD completely the user must 
+#To define the METHOD completely the user must
 #code the procedures of selection, model update, and variation.
-#Proper execution of the metaheuristic method needs 
+#Proper execution of the metaheuristic method needs
 #a list of start points, an evaluation method
 #an initialization procedure, and a termination condition
 
@@ -53,7 +53,7 @@ modelUpdate<-function(selectedPoints, oldModel)
    #TODO: implement and test - substitute current coordinates
    #                         - count new velocities
    #                         - update global best
-   return (oldModel) 
+   return (oldModel)
 }
 
 #generation of a LIST of new points
@@ -116,7 +116,7 @@ evaluateList<-function(points,evaluation)
 {
   for (i in 1:length(points))
      points[[i]]$quality<-evaluation(points[[i]]$coordinates)
-  return (points) 
+  return (points)
 }
 
 
