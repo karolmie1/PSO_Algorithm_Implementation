@@ -8,10 +8,10 @@ before_install:
   - ./travis-tool.sh bootstrap
 
 install:
-  - ./travis-tool.sh install_r testthat
+  - ./travis-tool.sh install_devtools 
 
 script: 
-  - Rscript -e "library(testthat);invisible(source_dir('./',env=globalenv()));test_dir('tests');test_dir('tests',reporter='stop')"
+  - ./travis-tool.sh run_tests
 
 notifications:
   email: false
