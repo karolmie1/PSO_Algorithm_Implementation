@@ -1,16 +1,16 @@
 test_that("Model initializes properly", {
-  popCount = 5;
+  particlesCount = 5;
   dimCount = 3;
-  x = generateStartPoints(popCount, dimCount, 5, 5);
+  x = generateStartPoints(particlesCount, dimCount, 5, 5);
   model = initModel(evaluateList(x, sum));
 
-  expect_that(length(model$population$velocity), equals(popCount));
-  expect_that(length(model$population$position), equals(popCount));
-  expect_that(length(model$population$best), equals(popCount));
+  expect_that(length(model$particles$velocities), equals(particlesCount));
+  expect_that(length(model$particles$positions), equals(particlesCount));
+  expect_that(length(model$particles$bestPositions), equals(particlesCount));
 
-  expect_that(length(model$population$velocity[[2]]), equals(dimCount));
-  expect_that(length(model$population$position[[2]]$coordinates), equals(dimCount));
-  expect_that(length(model$population$best[[2]]$coordinates), equals(dimCount));
+  expect_that(length(model$particles$velocities[[2]]), equals(dimCount));
+  expect_that(length(model$particles$positions[[2]]$coordinates), equals(dimCount));
+  expect_that(length(model$particles$bestPositions[[2]]$coordinates), equals(dimCount));
 })
 
 test_that("Evaluation method works", {

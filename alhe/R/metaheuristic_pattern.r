@@ -29,11 +29,11 @@ normalizeBySquaring <- function(velocity, center) {
 
 #Initial Velocity should be random, and should be adequate to search space size
 #This function provides such constrained initial velocities.
-generateInitVelocity <- function(popCount, dimCount) {
+generateInitVelocity <- function(particlesCount, dimCount) {
   center = (app.maxCoord + app.minCoord)/2;
   max = normalizeBySquaring(app.maxCoord, center);
   min = normalizeBySquaring(app.minCoord, center);
-  return(replicate(popCount, list(runif(dimCount, min, max))));
+  return(replicate(particlesCount, list(runif(dimCount, min, max))));
 }
 
 #Model structure:
@@ -47,10 +47,10 @@ generateInitVelocity <- function(popCount, dimCount) {
 #     - vector of velocity
 #     - quality
 initModel<-function(history) {
-  popCount = length(history);
+  particlesCount = length(history);
   dimCount = length(history[[1]]$coordinates);
-  population = list(velocity = generateInitVelocity(popCount, dimCount), position = history, best = history);
-  newModel = list(population = population, best = getBestPoint(history));
+  particles = list(velocities = generateInitVelocity(particlesCount , dimCount), positions = history, bestPositions = history);
+  newModel = list(particles = particles, bestPosition = getBestPoint(history));
   return(newModel);
 }
 
