@@ -47,3 +47,14 @@ test_that("Init Velocity generates arrays with desired dimentions", {
   expect_that(length(result), equals(3));
   expect_that(length(result[[1]]), equals(4));
 })
+
+test_that("Selection returns what was placed into model", {
+  particlesCount = 5;
+  dimCount = 3;
+
+  x = evaluateList(generateStartPoints(particlesCount, dimCount, 5, 5), sum);
+  model = initModel(x);
+
+  expect_that(selection(NaN, model), equals(x));
+})
+

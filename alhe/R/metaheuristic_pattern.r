@@ -55,11 +55,9 @@ initModel<-function(history) {
 }
 
 #selection of a LIST of points from the history
-#to be defined
 selection<-function(history, model)
 {
-   #TODO: implement and test - extract list of current coordinates from model
-   return(model);
+  return(model$particles$positions);
 }
 
 #update of a model based on a LIST of points
