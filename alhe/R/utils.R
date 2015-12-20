@@ -19,7 +19,18 @@ getBoundedEvaluation <- function (evaluation, point) {
 #'
 #' @param history A history.
 #' @param model A model.
+#' @param maxEvaluations Maximum number of evaluations
 #' @return decision if algorithm has to be stopped.
-terminateByEvaluationsCount <- function (history, model) {
-  return(length(history) > app.maxEvaluations);
+terminateByEvaluationsCount <- function (history, model, maxEvaluations) {
+  return(length(history) > maxEvaluations);
+}
+
+#' Adapter for terminateByEvaluationsCount so it can be used in algorithm
+#' Uses parameter app.maxEvaluations as limit of evaluations
+#'
+#' @param history A history.
+#' @param model A model.
+#' @return decision if algorithm has to be stopped.
+termination <- function(history, model) {
+  return(terminateByEvaluationsCount(history, NaN, app.maxEvaluations));
 }

@@ -10,7 +10,7 @@ test_that("Generating start points works", {
 testTermination <- function(evaluationLimit, history, model, termination, comparison) {
   temp = app.maxEvaluations;
   app.maxEvaluations <<- evaluationLimit;
-  result = terminateByEvaluationsCount(history, model);
+  result = terminateByEvaluationsCount(history, model, evaluationLimit);
   expect_that(result, comparison);
   app.maxEvaluations <<- temp;
 }
