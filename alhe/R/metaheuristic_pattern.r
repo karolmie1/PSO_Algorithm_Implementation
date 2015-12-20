@@ -55,8 +55,7 @@ initModel<-function(history) {
 }
 
 #selection of a LIST of points from the history
-selection<-function(history, model)
-{
+selection<-function(history, model){
   return(model$particles$positions);
 }
 
@@ -64,10 +63,24 @@ selection<-function(history, model)
 #to be defined
 modelUpdate<-function(selectedPoints, oldModel)
 {
-   #TODO: implement and test - substitute current coordinates
-   #                         - count new velocities
-   #                         - update global best
-   return (oldModel)
+  i = 1;
+  for(velocity in oldModel$particles$velocities){
+    j = 1;
+    for(v in velocity){
+      oldModel$particles$positions[[i]]$coordinates[j] <- oldModel$particles$positions[[i]]$coordinates[j]+v;
+      j = j + 1;
+    }
+    #update velocity with updatePointVelocity function
+    oldModel$particles$positions[[i]]$quality <- evaluate(oldModel$particles$positions[[i]]$coordinates, sum);
+    if(oldModel$particles$positions[[i]]$quality > oldModel$particles$bestPositions[[i]]$quality) {
+      oldModel$particles$bestPositions[[i]] <- oldModel$particles$positions[[i]];
+    }
+    if(oldModel$particles$positions[[i]]$quality > oldModel$bestPosition$quality){
+      oldModel$bestPosition <- oldModel$particles$positions[[i]]
+    }
+    i = i + 1;
+  }
+  return (oldModel)
 }
 
 #generation of a LIST of new points
@@ -131,6 +144,11 @@ evaluateList<-function(points,evaluation)
   for (i in 1:length(points))
      points[[i]]$quality<-evaluation(points[[i]]$coordinates)
   return (points)
+}
+
+evaluate <- function(coordinates, evaluation){
+  quality <- evaluation(coordinates);
+  return (quality);
 }
 
 
