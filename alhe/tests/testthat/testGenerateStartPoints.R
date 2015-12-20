@@ -7,20 +7,12 @@ test_that("Generating start points works", {
   expect_that(x, equals(result));
 })
 
-testTermination <- function(evaluationLimit, history, model, termination, comparison) {
-  temp = app.maxEvaluations;
-  app.maxEvaluations <<- evaluationLimit;
-  result = terminateByEvaluationsCount(history, model, evaluationLimit);
-  expect_that(result, comparison);
-  app.maxEvaluations <<- temp;
-}
-
 test_that("TerminationByEvaluationsCount return proper values depending on different history length", {
   popCount = 3;
   notEnoughEvaluations = popCount - 1;
   enoughEvaluations = popCount + 4;
   history = generateStartPoints(popCount, 2, 0, 0);
 
-  testTermination(notEnoughEvaluations, history, NaN, terminateByEvaluationsCount, is_true());
-  testTermination(enoughEvaluations, history, NaN, terminateByEvaluationsCount, is_false());
+  expect_that(terminateByEvaluationsCount(history, NaN, notEnoughEvaluations), is_true());
+  expect_that(terminateByEvaluationsCount(history, NaN, enoughEvaluations), is_false());
 })
