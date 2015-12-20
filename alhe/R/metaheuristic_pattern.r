@@ -8,9 +8,6 @@
 
 ############################################################
 
-
-
-
 #### TO BE DEFINED BY THE USER
 getBestPoint <- function(points) {
   bestPoint = points[[1]];
@@ -63,21 +60,32 @@ selection<-function(history, model){
 #to be defined
 modelUpdate<-function(selectedPoints, oldModel)
 {
+  #for every particle
   i = 1;
   for(velocity in oldModel$particles$velocities){
     j = 1;
+    #updating positions according to old velocities
     for(v in velocity){
       oldModel$particles$positions[[i]]$coordinates[j] <- oldModel$particles$positions[[i]]$coordinates[j]+v;
       j = j + 1;
     }
-    #update velocity with updatePointVelocity function
-    oldModel$particles$positions[[i]]$quality <- evaluate(oldModel$particles$positions[[i]]$coordinates, sum);
+
+    #updating velocities
+    oldModel$particles$velocities[[i]] <- updatePointVelocity(oldModel$particles$velocities[[i]],  oldModel$particles$positions[[i]]$coordinates, oldModel$particles$bestPositions[[i]], oldModel$bestPosition);
+
+    #updating qualities
+    oldModel$particles$positions[[i]]$quality <- evaluate(oldModel$particles$positions[[i]]$coordinates);
+
+    #updating Local best
     if(oldModel$particles$positions[[i]]$quality > oldModel$particles$bestPositions[[i]]$quality) {
       oldModel$particles$bestPositions[[i]] <- oldModel$particles$positions[[i]];
     }
+    #updating global best
     if(oldModel$particles$positions[[i]]$quality > oldModel$bestPosition$quality){
       oldModel$bestPosition <- oldModel$particles$positions[[i]]
     }
+
+    #iterate to next element
     i = i + 1;
   }
   return (oldModel)
@@ -124,32 +132,18 @@ metaheuristicRun<-function(initialization, startPoints, termination, evaluation)
    return(history)
 }
 
-#push a LIST of points into the history
-historyPush<-function(oldHistory, newPoints)
-{
-   newHistory<-c(oldHistory,newPoints)
-   return (newHistory)
-}
-#read a LIST of points pushed recently into the history
-historyPop<-function(history, number)
-{
-   stop=length(history)
-   start=max(stop-number+1,1)
-   return(history[start:stop])
-}
-
 #evaluate a LIST of points
 evaluateList<-function(points,evaluation)
 {
   for (i in 1:length(points))
-     points[[i]]$quality<-evaluation(points[[i]]$coordinates)
+    points[[i]]$quality<-evaluation(points[[i]]$coordinates)
   return (points)
 }
 
-evaluate <- function(coordinates, evaluation){
-  quality <- evaluation(coordinates);
+evaluate <- function(coordinates){
+  #TODO change this sum to accual evaulating function
+  quality <- sum(coordinates);
   return (quality);
 }
-
 
 ####  THAT'S ALL FOLKS
