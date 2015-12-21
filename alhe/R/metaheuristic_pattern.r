@@ -57,46 +57,50 @@ selection<-function(history, model){
 }
 
 #update of a model based on a LIST of points
-#to be defined
 modelUpdate<-function(selectedPoints, oldModel)
 {
+  newModel <- oldModel;
   #for every particle
   i = 1;
-  for(velocity in oldModel$particles$velocities){
-    j = 1;
-    #updating positions according to old velocities
-    for(v in velocity){
-      oldModel$particles$positions[[i]]$coordinates[j] <- oldModel$particles$positions[[i]]$coordinates[j]+v;
-      j = j + 1;
+  for(velocity in newModel$particles$velocities){
+    #updating velocities according to selectedPoints list
+    newModel$particles$velocities[[i]] <- updatePointVelocity(velocity, selectedPoints[[i]]$coordinates, newModel$particles$bestPositions[[i]], newModel$bestPosition);
+
+    #updating Local bests
+    if(newModel$particles$positions[[i]]$quality > newModel$particles$bestPositions[[i]]$quality) {
+      newModel$particles$bestPositions[[i]] <- newModel$particles$positions[[i]];
     }
 
-    #updating velocities
-    oldModel$particles$velocities[[i]] <- updatePointVelocity(oldModel$particles$velocities[[i]],  oldModel$particles$positions[[i]]$coordinates, oldModel$particles$bestPositions[[i]], oldModel$bestPosition);
-
-    #updating qualities
-    oldModel$particles$positions[[i]]$quality <- evaluate(oldModel$particles$positions[[i]]$coordinates);
-
-    #updating Local best
-    if(oldModel$particles$positions[[i]]$quality > oldModel$particles$bestPositions[[i]]$quality) {
-      oldModel$particles$bestPositions[[i]] <- oldModel$particles$positions[[i]];
-    }
     #updating global best
-    if(oldModel$particles$positions[[i]]$quality > oldModel$bestPosition$quality){
-      oldModel$bestPosition <- oldModel$particles$positions[[i]]
+    if(newModel$particles$positions[[i]]$quality > newModel$bestPosition$quality){
+      newModel$bestPosition <- newModel$particles$positions[[i]]
     }
 
     #iterate to next element
     i = i + 1;
   }
-  return (oldModel)
+  return (newModel)
 }
 
 #generation of a LIST of new points
-#to be defined
-variation<-function(selectedPoints, model)
-{
-  #TODO: implement and test - count new point coordinates: use function described in documentation
-  #                         - add to properties files learning attributes
+variation<-function(selectedPoints, model){
+  i = 1;
+  for(velocity in model$particles$velocities){
+    j = 1;
+
+    #updating positions according to models velocities
+    for(v in velocity){
+      selectedPoints[[i]]$coordinates[j] <- selectedPoints[[i]]$coordinates[j]+v;
+      j = j + 1;
+    }
+
+    #updating qualities
+    selectedPoints[[i]]$quality <- evaluate(selectedPoints[[i]]$coordinates);
+
+    i = i + 1;
+  }
+
+  return(selectedPoints);
 }
 
 #####  THE METAHEURISTIC "ENGINE"
@@ -144,6 +148,34 @@ evaluate <- function(coordinates){
   #TODO change this sum to accual evaulating function
   quality <- sum(coordinates);
   return (quality);
+}
+
+
+updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bestGlobalCoordinates){
+  #TODO: implement main evaluating function
+  #add dependence on weigths(from properties)
+  #and depancence on randoms
+  #must return list of new velocities
+  i = 1;
+  for(v in velocity){
+    velocity[[i]] <-  velocity[[i]]+0.5
+    i = i+1;
+  }
+  return (velocity);
+}
+
+#push a LIST of points into the history
+historyPush<-function(oldHistory, newPoints)
+{
+  newHistory<-c(oldHistory,newPoints)
+  return (newHistory)
+}
+#read a LIST of points pushed recently into the history
+historyPop<-function(history, number)
+{
+  stop=length(history)
+  start=max(stop-number+1,1)
+  return(history[start:stop])
 }
 
 ####  THAT'S ALL FOLKS

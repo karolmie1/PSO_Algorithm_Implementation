@@ -6,9 +6,17 @@ test_that("Method correctly updates global max", {
   x = generateStartPoints(particlesCount, dimCount, 5, 5);
   model = initModel(evaluateList(x, sum));
 
-  model <- modelUpdate(0,model);
-  model <- modelUpdate(0,model);
-  model <- modelUpdate(0,model);
+  selectedPoints <- selection(NaN, model);
+  model$particles$positions <- variation(selectedPoints, model);
+  model <- modelUpdate(selection,model);
+
+  selectedPoints <- selection(NaN, model);
+  model$particles$positions <- variation(selectedPoints, model);
+  model <- modelUpdate(selection,model);
+
+  selectedPoints <- selection(NaN, model);
+  model$particles$positions <- variation(selectedPoints, model);
+  model <- modelUpdate(selection,model);
 
   globalBest = model$bestPosition$quality;
   pos = model$particles$positions
@@ -26,9 +34,19 @@ test_that("Method correctly updates Local max", {
   x = generateStartPoints(particlesCount, dimCount, 5, 5);
   model = initModel(evaluateList(x, sum));
 
-  model <- modelUpdate(0,model);
-  model <- modelUpdate(0,model);
-  model <- modelUpdate(0,model);
+  selectedPoints <- selection(NaN, model);
+  model$particles$positions <- variation(selectedPoints, model);
+  model <- modelUpdate(selection,model);
+
+  selectedPoints <- selection(NaN, model);
+  model$particles$positions <- variation(selectedPoints, model);
+  model <- modelUpdate(selection,model);
+
+
+  selectedPoints <- selection(NaN, model);
+  model$particles$positions <- variation(selectedPoints, model);
+  model <- modelUpdate(selection,model);
+
 
   pos = model$particles$positions
   i = 1;
@@ -37,4 +55,5 @@ test_that("Method correctly updates Local max", {
     i = i+1;
   }
 })
+
 

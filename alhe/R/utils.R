@@ -23,29 +23,3 @@ termination <- function (evaluation, point) {
 #                         - true if: close enough to optimum, too many steps
 }
 
-updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bestGlobalCoordinates){
-  #TODO: implement main evaluating function
-  #add dependence on weigths(from properties)
-  #and depancence on randoms
-  #must return list of new velocities
-  i = 1;
-  for(v in velocity){
-    velocity[[i]] <-  velocity[[i]]+0.5
-    i = i+1;
-  }
-  return (velocity);
-}
-
-#push a LIST of points into the history
-historyPush<-function(oldHistory, newPoints)
-{
-  newHistory<-c(oldHistory,newPoints)
-  return (newHistory)
-}
-#read a LIST of points pushed recently into the history
-historyPop<-function(history, number)
-{
-  stop=length(history)
-  start=max(stop-number+1,1)
-  return(history[start:stop])
-}
