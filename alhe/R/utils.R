@@ -15,8 +15,22 @@ getBoundedEvaluation <- function (evaluation, point) {
 #      make it used in meteheuristic when evaluation list
 }
 
-termination <- function (evaluation, point) {
-#TODO: implement and test - add parameter known global optimum, acceptable delta and max steps
-#                         - don't decrement max steps: in the initialization set new parameter: currentCounter
-#                         - true if: close enough to optimum, too many steps
+#' Terminates execution of algorithm after number of evaluatons exceeds certain treshold
+#'
+#' @param history A history.
+#' @param model A model.
+#' @param maxEvaluations Maximum number of evaluations
+#' @return decision if algorithm has to be stopped.
+terminateByEvaluationsCount <- function (history, model, maxEvaluations) {
+  return(length(history) > maxEvaluations);
+}
+
+#' Adapter for terminateByEvaluationsCount so it can be used in algorithm
+#' Uses parameter app.maxEvaluations as limit of evaluations
+#'
+#' @param history A history.
+#' @param model A model.
+#' @return decision if algorithm has to be stopped.
+termination <- function(history, model) {
+  return(terminateByEvaluationsCount(history, NaN, app.maxEvaluations));
 }

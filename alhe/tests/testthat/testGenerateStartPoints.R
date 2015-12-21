@@ -6,3 +6,13 @@ test_that("Generating start points works", {
   result = rep(list(temp), popCount);
   expect_that(x, equals(result));
 })
+
+test_that("TerminationByEvaluationsCount return proper values depending on different history length", {
+  popCount = 3;
+  notEnoughEvaluations = popCount - 1;
+  enoughEvaluations = popCount + 4;
+  history = generateStartPoints(popCount, 2, 0, 0);
+
+  expect_that(terminateByEvaluationsCount(history, NaN, notEnoughEvaluations), is_true());
+  expect_that(terminateByEvaluationsCount(history, NaN, enoughEvaluations), is_false());
+})
