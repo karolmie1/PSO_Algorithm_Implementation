@@ -63,9 +63,6 @@ modelUpdate<-function(selectedPoints, oldModel)
   #for every particle
   i = 1;
   for(velocity in newModel$particles$velocities){
-    #updating velocities according to selectedPoints list
-    newModel$particles$velocities[[i]] <- updatePointVelocity(velocity, selectedPoints[[i]]$coordinates, newModel$particles$bestPositions[[i]], newModel$bestPosition);
-
     #updating Local bests
     if(newModel$particles$positions[[i]]$quality > newModel$particles$bestPositions[[i]]$quality) {
       newModel$particles$bestPositions[[i]] <- newModel$particles$positions[[i]];
@@ -76,10 +73,26 @@ modelUpdate<-function(selectedPoints, oldModel)
       newModel$bestPosition <- newModel$particles$positions[[i]]
     }
 
+    #updating velocities according to selectedPoints list
+    newModel$particles$velocities[[i]] <- updatePointVelocity(velocity, selectedPoints[[i]]$coordinates, newModel$particles$bestPositions[[i]], newModel$bestPosition);
+
     #iterate to next element
     i = i + 1;
   }
   return (newModel)
+}
+
+updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bestGlobalCoordinates){
+#TODO add tests
+    i = 1;
+  for(v in velocity){
+    velocity[[i]] <- velocity [[i]] * weigths[[1]][[i]] + weigths[[2]][[i]]*(
+      learningVariables[[1]] * runif(1,0,1)*(bestLocalCoordinates[[1]][[i]] - coordinates[[i]]) +
+        learningVariables[[2]] * runif(1,0,1)*(bestGlobalCoordinates[[1]][[i]] - coordinates[[i]])
+    );
+    i = i+1;
+  }
+  return (velocity);
 }
 
 #generation of a LIST of new points
@@ -148,20 +161,6 @@ evaluate <- function(coordinates){
   #TODO change this sum to accual evaulating function
   quality <- sum(coordinates);
   return (quality);
-}
-
-
-updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bestGlobalCoordinates){
-  #TODO: implement main evaluating function
-  #add dependence on weigths(from properties)
-  #and depancence on randoms
-  #must return list of new velocities
-  i = 1;
-  for(v in velocity){
-    velocity[[i]] <-  velocity[[i]]+0.5
-    i = i+1;
-  }
-  return (velocity);
 }
 
 #push a LIST of points into the history
