@@ -74,7 +74,7 @@ modelUpdate<-function(selectedPoints, oldModel)
     }
 
     #updating velocities according to selectedPoints list
-    newModel$particles$velocities[[i]] <- updatePointVelocity(velocity, selectedPoints[[i]]$coordinates, newModel$particles$bestPositions[[i]], newModel$bestPosition);
+    newModel$particles$velocities[[i]] <- updatePointVelocity(newModel$particles$velocities[[i]], selectedPoints[[i]]$coordinates, newModel$particles$bestPositions[[i]], newModel$bestPosition);
 
     #iterate to next element
     i = i + 1;
@@ -84,13 +84,11 @@ modelUpdate<-function(selectedPoints, oldModel)
 
 updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bestGlobalCoordinates){
 #TODO add tests
-    i = 1;
-  for(v in velocity){
-    velocity[[i]] <- velocity [[i]] * weigths[[1]][[i]] + weigths[[2]][[i]]*(
+  for(i in 1:length(velocity)){
+    velocity[[i]] <- velocity [[i]] * weigths[[1]] + weigths[[2]]*(
       learningVariables[[1]] * runif(1,0,1)*(bestLocalCoordinates[[1]][[i]] - coordinates[[i]]) +
         learningVariables[[2]] * runif(1,0,1)*(bestGlobalCoordinates[[1]][[i]] - coordinates[[i]])
     );
-    i = i+1;
   }
   return (velocity);
 }
@@ -106,10 +104,6 @@ variation<-function(selectedPoints, model){
       selectedPoints[[i]]$coordinates[j] <- selectedPoints[[i]]$coordinates[j]+v;
       j = j + 1;
     }
-
-    #updating qualities
-    selectedPoints[[i]]$quality <- evaluate(selectedPoints[[i]]$coordinates);
-
     i = i + 1;
   }
 
@@ -155,12 +149,6 @@ evaluateList<-function(points,evaluation)
   for (i in 1:length(points))
     points[[i]]$quality<-evaluation(points[[i]]$coordinates)
   return (points)
-}
-
-evaluate <- function(coordinates){
-  #TODO change this sum to accual evaulating function
-  quality <- sum(coordinates);
-  return (quality);
 }
 
 #push a LIST of points into the history
