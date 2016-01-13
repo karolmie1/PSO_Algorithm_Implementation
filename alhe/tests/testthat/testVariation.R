@@ -32,3 +32,26 @@ test_that("Points are changing", {
   i = i+1;
   }
 })
+
+
+test_that("Variation updates coordinates", {
+  particlesCount <- 2;
+  dimCount <- 4;
+
+  startCoordinates <- 5;
+  velocity <- 1;
+  endCoordinates <- 6;
+
+  x <- generateStartPoints(particlesCount, dimCount, startCoordinates, startCoordinates);
+  model <- initModel(evaluateList(x, sum));
+
+  #Replace randomly generated velocities with something less random
+  model$particles$velocities <- replicate(particlesCount, list(rep(velocity, dimCount)));
+
+  y <- variation(x, model);
+
+  #Tests if after variaton startCoordinates + velocity = endCoordinates
+  for(particle in y) {
+    expect_that(particle$coordinates, equals(rep(endCoordinates, dimCount)));
+  }
+})

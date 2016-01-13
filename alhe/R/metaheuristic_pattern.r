@@ -60,9 +60,7 @@ selection<-function(history, model){
 modelUpdate<-function(selectedPoints, oldModel)
 {
   newModel <- oldModel;
-  #for every particle
-  i = 1;
-  for(velocity in newModel$particles$velocities){
+  for( i in 1:length(newModel$particles$velocities)) {
     #updating Local bests
     if(newModel$particles$positions[[i]]$quality > newModel$particles$bestPositions[[i]]$quality) {
       newModel$particles$bestPositions[[i]] <- newModel$particles$positions[[i]];
@@ -76,8 +74,6 @@ modelUpdate<-function(selectedPoints, oldModel)
     #updating velocities according to selectedPoints list
     newModel$particles$velocities[[i]] <- updatePointVelocity(newModel$particles$velocities[[i]], selectedPoints[[i]]$coordinates, newModel$particles$bestPositions[[i]], newModel$bestPosition);
 
-    #iterate to next element
-    i = i + 1;
   }
   return (newModel)
 }
@@ -95,19 +91,11 @@ updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bes
 
 #generation of a LIST of new points
 variation<-function(selectedPoints, model){
-  i = 1;
-  for(velocity in model$particles$velocities){
-    j = 1;
-
-    #updating positions according to models velocities
-    for(v in velocity){
-      selectedPoints[[i]]$coordinates[j] <- selectedPoints[[i]]$coordinates[j]+v;
-      j = j + 1;
-    }
-    i = i + 1;
+  for(i in 1:length(selectedPoints)) {
+    model$particles$positions[[i]]$coordinates <- selectedPoints[[i]]$coordinates + model$particles$velocities[[i]];
   }
 
-  return(selectedPoints);
+  return(model$particles$positions);
 }
 
 #####  THE METAHEURISTIC "ENGINE"
