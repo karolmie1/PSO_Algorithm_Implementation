@@ -8,7 +8,9 @@ generateStartPoints <- function(popCount, dim, min, max) {
   return(lista);
 }
 
-initialization<-function(startPoints) {return (startPoints)}
+initialization<-function(startPoints) {
+  return (startPoints)
+}
 
 getBoundedEvaluation <- function (evaluation, point) {
 #TODO: implement and add at least sanity test

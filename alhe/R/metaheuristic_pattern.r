@@ -8,9 +8,6 @@
 
 ############################################################
 
-
-
-
 #### TO BE DEFINED BY THE USER
 getBestPoint <- function(points) {
   bestPoint = points[[1]];
@@ -55,27 +52,54 @@ initModel<-function(history) {
 }
 
 #selection of a LIST of points from the history
-selection<-function(history, model)
-{
-  return(model$particles$positions);
+selection<-function(history, model){
+  return(historyPop(history, length(model$particles$positions)));
 }
 
 #update of a model based on a LIST of points
-#to be defined
 modelUpdate<-function(selectedPoints, oldModel)
 {
-   #TODO: implement and test - substitute current coordinates
-   #                         - count new velocities
-   #                         - update global best
-   return (oldModel)
+  newModel <- oldModel;
+  newModel$particles$positions <- selectedPoints;
+
+  for( i in 1:length(newModel$particles$velocities)) {
+    #updating Local bests
+    if(newModel$particles$positions[[i]]$quality > newModel$particles$bestPositions[[i]]$quality) {
+      newModel$particles$bestPositions[[i]] <- newModel$particles$positions[[i]];
+    }
+
+    #updating global best
+    if(newModel$particles$positions[[i]]$quality > newModel$bestPosition$quality){
+      newModel$bestPosition <- newModel$particles$positions[[i]]
+    }
+
+    #updating velocities according to selectedPoints list
+    newModel$particles$velocities[[i]] <- updatePointVelocity(newModel$particles$velocities[[i]], selectedPoints[[i]]$coordinates, newModel$particles$bestPositions[[i]], newModel$bestPosition);
+
+  }
+  return (newModel)
+}
+
+updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bestGlobalCoordinates){
+#TODO add tests
+
+
+  for(i in 1:length(velocity)){
+    velocity[[i]] <- velocity [[i]] * weigths[[1]] + weigths[[2]]*(
+      learningVariables[[1]] * runif(1,0,1)*(bestLocalCoordinates$coordinates[[i]] - coordinates[[i]]) +
+        learningVariables[[2]] * runif(1,0,1)*(bestGlobalCoordinates$coordinates[[i]] - coordinates[[i]])
+    );
+  }
+  return (velocity);
 }
 
 #generation of a LIST of new points
-#to be defined
-variation<-function(selectedPoints, model)
-{
-  #TODO: implement and test - count new point coordinates: use function described in documentation
-  #                         - add to properties files learning attributes
+variation<-function(selectedPoints, model){
+  for(i in 1:length(selectedPoints)) {
+    selectedPoints[[i]]$coordinates <- selectedPoints[[i]]$coordinates + model$particles$velocities[[i]];
+  }
+
+  return(selectedPoints);
 }
 
 #####  THE METAHEURISTIC "ENGINE"
@@ -111,27 +135,26 @@ metaheuristicRun<-function(initialization, startPoints, termination, evaluation)
    return(history)
 }
 
-#push a LIST of points into the history
-historyPush<-function(oldHistory, newPoints)
-{
-   newHistory<-c(oldHistory,newPoints)
-   return (newHistory)
-}
-#read a LIST of points pushed recently into the history
-historyPop<-function(history, number)
-{
-   stop=length(history)
-   start=max(stop-number+1,1)
-   return(history[start:stop])
-}
-
 #evaluate a LIST of points
 evaluateList<-function(points,evaluation)
 {
   for (i in 1:length(points))
-     points[[i]]$quality<-evaluation(points[[i]]$coordinates)
+    points[[i]]$quality<-evaluation(points[[i]]$coordinates)
   return (points)
 }
 
+#push a LIST of points into the history
+historyPush<-function(oldHistory, newPoints)
+{
+  newHistory<-c(oldHistory,newPoints)
+  return (newHistory)
+}
+#read a LIST of points pushed recently into the history
+historyPop<-function(history, number)
+{
+  stop=length(history)
+  start=max(stop-number+1,1)
+  return(history[start:stop])
+}
 
 ####  THAT'S ALL FOLKS
