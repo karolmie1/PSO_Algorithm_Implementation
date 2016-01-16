@@ -4,12 +4,14 @@
 \alias{terminateByEvaluationsCount}
 \title{Terminates execution of algorithm after number of evaluatons exceeds certain treshold}
 \usage{
-terminateByEvaluationsCount(history, model)
+terminateByEvaluationsCount(history, model, maxEvaluations)
 }
 \arguments{
 \item{history}{A history.}
 
 \item{model}{A model.}
+
+\item{maxEvaluations}{Maximum number of evaluations}
 }
 \value{
 decision if algorithm has to be stopped.

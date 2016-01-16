@@ -19,7 +19,7 @@ test_that("Method correctly updates global max", {
 
   globalBest = model$bestPosition$quality;
   for(p in model$particles$positions){
-    expect_that(p$quality, is_less_than(globalBest + 0.1));
+    expect_that(p$quality, is_more_than(globalBest - 0.1));
   }
 })
 
@@ -42,8 +42,9 @@ test_that("Method correctly updates Local max", {
     history<-historyPush(history, result);
   }
 
+  model <- modelUpdate(selectedPoints,model);
   for(i in 1:length(model$particles$positions)) {
-    expect_that(model$particles$positions[[i]]$quality, is_less_than(model$particles$bestPositions[[i]]$quality + 0.1));
+    expect_that(model$particles$positions[[i]]$quality, is_more_than(model$particles$bestPosition[[i]]$quality - 0.1));
   }
 })
 

@@ -64,12 +64,12 @@ modelUpdate<-function(selectedPoints, oldModel)
 
   for( i in 1:length(newModel$particles$velocities)) {
     #updating Local bests
-    if(newModel$particles$positions[[i]]$quality > newModel$particles$bestPositions[[i]]$quality) {
-      newModel$particles$bestPositions[[i]] <- newModel$particles$positions[[i]];
+    if(newModel$particles$positions[[i]]$quality < newModel$particles$bestPosition[[i]]$quality) {
+      newModel$particles$bestPosition[[i]] <- newModel$particles$positions[[i]];
     }
 
     #updating global best
-    if(newModel$particles$positions[[i]]$quality > newModel$bestPosition$quality){
+    if(newModel$particles$positions[[i]]$quality < newModel$bestPosition$quality){
       newModel$bestPosition <- newModel$particles$positions[[i]]
     }
 
@@ -120,7 +120,7 @@ aggregatedOperator<-function(history, oldModel)
 #a termination condition, an initialization procedure
 #and an evaluation procedure.
 #The result is the history of the run
-metaheuristicRun<-function(initialization, startPoints, termination, evaluation)
+metaheuristicRun <- function(initialization, startPoints, termination, evaluation)
 {
    history<-initialization(startPoints)
    history<-evaluateList(history,evaluation)
