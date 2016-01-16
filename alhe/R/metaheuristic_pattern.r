@@ -53,13 +53,15 @@ initModel<-function(history) {
 
 #selection of a LIST of points from the history
 selection<-function(history, model){
-  return(model$particles$positions);
+  return(historyPop(history, length(model$particles$positions)));
 }
 
 #update of a model based on a LIST of points
 modelUpdate<-function(selectedPoints, oldModel)
 {
   newModel <- oldModel;
+  newModel$particles$positions <- selectedPoints;
+
   for( i in 1:length(newModel$particles$velocities)) {
     #updating Local bests
     if(newModel$particles$positions[[i]]$quality > newModel$particles$bestPositions[[i]]$quality) {
@@ -80,10 +82,12 @@ modelUpdate<-function(selectedPoints, oldModel)
 
 updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bestGlobalCoordinates){
 #TODO add tests
+
+
   for(i in 1:length(velocity)){
     velocity[[i]] <- velocity [[i]] * weigths[[1]] + weigths[[2]]*(
-      learningVariables[[1]] * runif(1,0,1)*(bestLocalCoordinates[[1]][[i]] - coordinates[[i]]) +
-        learningVariables[[2]] * runif(1,0,1)*(bestGlobalCoordinates[[1]][[i]] - coordinates[[i]])
+      learningVariables[[1]] * runif(1,0,1)*(bestLocalCoordinates$coordinates[[i]] - coordinates[[i]]) +
+        learningVariables[[2]] * runif(1,0,1)*(bestGlobalCoordinates$coordinates[[i]] - coordinates[[i]])
     );
   }
   return (velocity);
@@ -92,10 +96,10 @@ updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bes
 #generation of a LIST of new points
 variation<-function(selectedPoints, model){
   for(i in 1:length(selectedPoints)) {
-    model$particles$positions[[i]]$coordinates <- selectedPoints[[i]]$coordinates + model$particles$velocities[[i]];
+    selectedPoints[[i]]$coordinates <- selectedPoints[[i]]$coordinates + model$particles$velocities[[i]];
   }
 
-  return(model$particles$positions);
+  return(selectedPoints);
 }
 
 #####  THE METAHEURISTIC "ENGINE"

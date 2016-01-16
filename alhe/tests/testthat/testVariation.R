@@ -3,24 +3,23 @@ test_that("Points are changing", {
   #is actually greater than any of particle's qualities
   particlesCount <- 5;
   dimCount <- 3;
+
   x <- generateStartPoints(particlesCount, dimCount, 5, 5);
-  model <- initModel(evaluateList(x, sum));
+  x <- evaluateList(x, sum);
+  model <- initModel(x);
+  history <- initialization(x);
 
-  startingPoints <- selection(NaN, model);
+  startingPoints <- selection(history, model);
 
-  selectedPoints <- selection(NaN, model);
-  model <- modelUpdate(selectedPoints,model);
-  model$particles$positions <- variation(selectedPoints, model);
+  for(i in 1:3) {
+    selectedPoints <- selection(history, model);
+    model <- modelUpdate(selectedPoints,model);
+    result <- variation(selectedPoints, model);
+    result <-evaluateList(result, sum)
+    history<-historyPush(history, result);
+  }
 
-  selectedPoints <- selection(NaN, model);
-  model <- modelUpdate(selectedPoints,model);
-  model$particles$positions <- variation(selectedPoints, model);
-
-  selectedPoints <- selection(NaN, model);
-  model <- modelUpdate(selectedPoints,model);
-  model$particles$positions <- variation(selectedPoints, model);
-
-  endingPoints <- selection(NaN, model);
+  endingPoints <- selection(history, model);
 
   i = 1;
   for(point in startingPoints){
