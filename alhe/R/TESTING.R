@@ -35,10 +35,51 @@ bidi = function(x,y) {
 
 testScenario <- function (x, fnc, name) {
   weigths  <<-  c(x, 1-x);
-  app.maxEvaluations <<- 1000;
-  history = metaheuristicRun(initialization, generateStartPoints(3,2,-5,5), termination, fnc)
+  app.maxEvaluations <<- 100;
+  history = metaheuristicRun(initialization, generateStartPoints(1,2,-10,10), termination, fnc)
   plotQuality(history, name)
   return(history)
+}
+
+benchmarkCore <- function(populationCount, dimentions, fnc, runs) {
+
+  result = vector(length = runs);
+  for(i in 1:runs) {
+    history = metaheuristicRun(initialization, generateStartPoints(populationCount,dimentions,-10,10), termination, fnc)
+    result[i] = minHistory(history);
+  }
+
+  return(mean(result))
+}
+
+benchmark <- function (fnc) {
+  app.maxEvaluations <<- 100;
+  weight=0.3
+  populationCount = 3;
+  dimentions = 2;
+
+  runs = 100;
+
+  x<- list();
+  y<- vector();
+  for(weight in seq(0.01, 0.99, 0.02)) {
+    print(c("progress: ", weight))
+  #for(populationCount in 1:6) {
+
+    weigths  <<-  c(weight, 1-weight);
+
+    #benchmarking start
+    result = benchmarkCore(populationCount, dimentions, fnc, runs);
+    y = append(y, result);
+    #benchmarking end
+
+    #x = append(x, populationCount);
+    x = append(x, weight);
+
+
+  }
+
+  plot(x, y, xlab="weights", ylab=paste(c("quality  (", runs ," runs)"), collapse=""));
 }
 
 testJog <- function (x) {
@@ -59,7 +100,7 @@ testRosenbrock <- function (x) {
 }
 
 minHistory <-function (x) {
-  z =vector();
+  z =vector(length = length(x));
   for(i in 1:length(x)){
     z[i] = x[[i]]$quality;
   }
@@ -75,5 +116,6 @@ trace <-function (z) {
   }
 
   plot(x,y)
+  lines(x, y, type='l');
   minHistory(history)
 }
