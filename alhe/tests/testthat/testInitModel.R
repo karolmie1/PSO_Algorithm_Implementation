@@ -1,8 +1,11 @@
 test_that("Model initializes properly", {
   particlesCount = 5;
   dimCount = 3;
+  psoProps.initSpawnArea <<- 100;
   x = generateStartPoints(particlesCount, dimCount, 5, 5);
   model = initModel(evaluateList(x, sum));
+
+
 
   expect_that(length(model$particles$velocities), equals(particlesCount));
   expect_that(length(model$particles$positions), equals(particlesCount));

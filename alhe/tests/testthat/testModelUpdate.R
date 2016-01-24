@@ -4,6 +4,9 @@ test_that("Method correctly updates global max", {
   particlesCount <- 5;
   dimCount <- 3;
 
+  psoProps.explorationVsExploitaitionRatio<<- 0.7;
+  psoProps.initSpawnArea <<- 100;
+  psoProps.localBestVsGlobalBestRatio <<-0.7;
   x <- generateStartPoints(particlesCount, dimCount, 5, 5);
   x <- evaluateList(x, sum);
   model <- initModel(x);
@@ -28,6 +31,10 @@ test_that("Method correctly updates Local max", {
   #is actually greater than any of particle's accual qualities
   particlesCount = 5;
   dimCount = 5;
+
+  psoProps.explorationVsExploitaitionRatio<<- 0.7;
+  psoProps.initSpawnArea <<- 100;
+  psoProps.localBestVsGlobalBestRatio <<-0.7;
 
   x <- generateStartPoints(particlesCount, dimCount, 5, 5);
   x <- evaluateList(x, sum);

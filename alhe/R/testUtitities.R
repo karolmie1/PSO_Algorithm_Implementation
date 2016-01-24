@@ -90,7 +90,7 @@ plotQuality <- function(history, fName) {
     y <- c(y, point$quality);
   }
   plot(x, y, xlab="steps", ylab="quality");
-  title(main = c( fName, paste(weigths,collapse=" ")));
+  title(main = fName);
 }
 
 #' Private function for benchmark
