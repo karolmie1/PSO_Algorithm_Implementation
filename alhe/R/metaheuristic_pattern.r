@@ -27,9 +27,9 @@ normalizeBySquaring <- function(velocity, center) {
 #Initial Velocity should be random, and should be adequate to search space size
 #This function provides such constrained initial velocities.
 generateInitVelocity <- function(particlesCount, dimCount) {
-  center = (app.maxCoord + app.minCoord)/2;
-  max = normalizeBySquaring(app.maxCoord, center);
-  min = normalizeBySquaring(app.minCoord, center);
+  center = 0;
+  max = normalizeBySquaring(psoProps.initSpawnArea, center);
+  min = normalizeBySquaring(-psoProps.initSpawnArea, center);
   return(replicate(particlesCount, list(runif(dimCount, min, max))));
 }
 
@@ -85,9 +85,9 @@ updatePointVelocity <- function(velocity, coordinates, bestLocalCoordinates, bes
 
 
   for(i in 1:length(velocity)){
-    velocity[[i]] <- velocity [[i]] * weigths[[1]] + weigths[[2]]*(
-      learningVariables[[1]] * runif(1,0,1)*(bestLocalCoordinates$coordinates[[i]] - coordinates[[i]]) +
-        learningVariables[[2]] * runif(1,0,1)*(bestGlobalCoordinates$coordinates[[i]] - coordinates[[i]])
+    velocity[[i]] <- velocity [[i]] * (psoProps.explorationVsExploitaitionRatio) + (1-psoProps.explorationVsExploitaitionRatio)*(
+      (1 - psoProps.localBestVsGlobalBestRatio) * runif(1,0,1)*(bestLocalCoordinates$coordinates[[i]] - coordinates[[i]]) +
+        psoProps.localBestVsGlobalBestRatio * runif(1,0,1)*(bestGlobalCoordinates$coordinates[[i]] - coordinates[[i]])
     );
   }
   return (velocity);
@@ -115,13 +115,24 @@ aggregatedOperator<-function(history, oldModel)
    return (list(newPoints=newPoints,newModel=newModel))
 }
 
-#The main loop of a metaheuristic.
-#The user must define a LIST of start points,
-#a termination condition, an initialization procedure
-#and an evaluation procedure.
-#The result is the history of the run
-metaheuristicRun <- function(initialization, startPoints, termination, evaluation)
+#' Main function that runs metaheuristic PSO algorithm implementation.
+#'
+#' @param initialization A method that constructs history from start points
+#' @param startPoints A group of start Points
+#' @param termination A method that stops algorithm after certain condition is met
+#' @param evaluation A method that counts the quality of the points
+#' @param initSpawnArea A radius according to which initial velocities of particles are generated
+#' @param maxEvaluations Maximum number of evaluations
+#' @param localBestVsGlobalBestRatio A number between 0 and 1 telling how strongly particle will be pulled against best known points
+#' @param explorationVsExploitaitionRatio A number between 0 and 1 telling if particles will explore or exploit more
+#' @return history of the run
+metaheuristicRun <- function(initialization, startPoints, termination, evaluation, initSpawnArea = 10, maxEvaluations = 100, localBestVsGlobalBestRatio = 0.75, explorationVsExploitaitionRatio = 0.9)
 {
+  psoProps.initSpawnArea <<- initSpawnArea;
+  psoProps.maxEvaluations <<- maxEvaluations;
+  psoProps.localBestVsGlobalBestRatio <<- localBestVsGlobalBestRatio;
+  psoProps.explorationVsExploitaitionRatio <<- explorationVsExploitaitionRatio ;
+
    history<-initialization(startPoints)
    history<-evaluateList(history,evaluation)
    model<-initModel(history)

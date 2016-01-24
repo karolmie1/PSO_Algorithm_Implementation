@@ -40,17 +40,6 @@ terminateByEvaluationsCount <- function (history, model, maxEvaluations) {
 #' @param model A model.
 #' @return decision if algorithm has to be stopped.
 termination <- function(history, model) {
-  return(terminateByEvaluationsCount(history, NaN, app.maxEvaluations));
+  return(terminateByEvaluationsCount(history, NaN, psoProps.maxEvaluations));
 }
 
-#' Plots the change of quality in time
-#'
-#' @param history A history.
-plotQuality <- function(history) {
-  y <- list();
-
-  for(point in history) {
-    y <- c(y, point$quality);
-  }
-  plot(1:length(history), y);
-}
